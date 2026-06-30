@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <title>敬拜歌曲 PPT 搜尋器</title>
+</head>
+<body>
+    <input type="text" id="searchInput" placeholder="請輸入關鍵字...">
+    <div id="results"></div>
+
+    <script src="data.js"></script>
+
+    <script>
+        const input = document.getElementById('searchInput');
+        input.addEventListener('input', function() {
+            const val = this.value.toLowerCase();
+            const results = document.getElementById('results');
+            results.innerHTML = '';
+            
+            // 這邊會自動讀取 data.js 裡的 songs
+            songs.forEach(song => {
+                if(song.text.toLowerCase().includes(val)) {
+                    results.innerHTML += `<div>${song.id}: ${song.text}</div>`;
+                }
+            });
+        });
+    </script>
+</body>
+</html>
