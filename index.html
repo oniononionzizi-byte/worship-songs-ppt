@@ -3,24 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <title>敬拜歌曲 PPT 搜尋器</title>
+    <style>
+        body { font-family: sans-serif; line-height: 1.6; padding: 20px; }
+        #searchInput { width: 100%; padding: 10px; font-size: 16px; }
+        .song-item { margin: 10px 0; padding: 10px; border-bottom: 1px solid #eee; }
+        .song-id { color: red; font-weight: bold; margin-right: 10px; }
+        /* 用來標示副歌/Bridge的樣式 */
+        .tag-chorus { color: blue; font-size: 0.9em; font-style: italic; }
+    </style>
 </head>
 <body>
-    <input type="text" id="searchInput" placeholder="請輸入關鍵字...">
+    <input type="text" id="searchInput" placeholder="請輸入關鍵字 (支援模糊搜尋)...">
     <div id="results"></div>
 
     <script src="data.js"></script>
-
     <script>
+        // 字體對應表 (容錯處理)
+        const normalize = (text) => {
+            return text.toLowerCase()
+                .replace(/注/g, '註').replace(/裏/g, '裡').replace(/他/g, '祂');
+        };
+
         const input = document.getElementById('searchInput');
         input.addEventListener('input', function() {
-            const val = this.value.toLowerCase();
+            const val = normalize(this.value);
             const results = document.getElementById('results');
             results.innerHTML = '';
             
-            // 這邊會自動讀取 data.js 裡的 songs
             songs.forEach(song => {
-                if(song.text.toLowerCase().includes(val)) {
-                    results.innerHTML += `<div>${song.id}: ${song.text}</div>`;
+                const songText = normalize(song.text);
+                
+                // 模糊搜尋邏輯：如果字串包含關鍵字，或是輸入4字以上且差異極小
+                if (songText.includes(val) || (val.length >= 4 && songText.includes(val.substring(0, val.length-1)))) {
+                    
+                    // 偵測是否為副歌或 Bridge (簡單判斷關鍵字)
+                    let tag = "";
+                    if (songText.includes('副歌') || songText.includes('chorus') || songText.includes('bridge')) {
+                        tag = ' <span class="tag-chorus">(副歌/Bridge)</span>';
+                    }
+
+                    results.innerHTML += `<div class="song-item">
+                        <span class="song-id">${song.id}</span>${song.text}${tag}
+                    </div>`;
                 }
             });
         });
