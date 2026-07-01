@@ -13,7 +13,13 @@ const songs = [
     { id: 19, text: '「祂名為耶和華創造主天父生命的源頭」' },
     { id: 71, text: '在主前傾心敬拜「寶座」前的祂 當我將一切所有完全獻上' },
     { id: 83, text: '讓我坦然無懼來到主「寶座」的施恩座前 用心靈誠實尋求你' },
+    { id: 110, text: '蒙召成聖潔能向萬邦發光靠主權能分享主愛' },
     { id: 162, text: '『信實全能的真神公義聖潔之主祂是正直良善』' },
+    { id: 193, text: '我們是屬神的子民是聖潔的國度' },
+    { id: 197, text: '同心頌揚主的聖名祂真配得我們敬拜尊崇' },
+    { id: 198, text: '我們同心合意舉起聖潔手同聲頌揚主聖名' },
+    { id: 204, text: '向萬王之王抬起頭仰望虔誠敬拜歌唱讚美祂' },
+    { id: 206, text: '良善聖潔榮耀全歸主耶穌我王' },
     { id: 8007, text: 'O Holy night The stars are brightly shining It is the night of our dear Saviour’s birth' },
     { id: 8016, text: 'Truly He taught us Love for one another His law is love and His gospel is peace' }
 ];
