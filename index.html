@@ -17,48 +17,54 @@
     <div class="header">
         <h1>ANM HK PPT 智能搜尋</h1>
         <!-- 請確保圖片檔名為 image_4.png 並且與 index.html 在同一目錄下 -->
-        <img src="image_4.png" alt="ANM HK">
+        <img src="./image_4.png" alt="ANM HK" style="max-width: 100%; height: auto; border-radius: 8px;">
     </div>
 
     <input type="text" id="searchInput" placeholder="請輸入關鍵字 (支援模糊搜尋)...">
     <div id="results"></div>
 
     <script src="data.js"></script>
-    <script>
-        const normalize = (text) => {
-            return text.toLowerCase()
-                .replace(/注/g, '註')
-                .replace(/裏/g, '裡')
-                .replace(/他/g, '祂');
-        };
+<script>
+    // 1. 定義標準化函式 (確保搜尋與顯示都統一)
+    const normalize = (text) => {
+        return text.toLowerCase()
+            .replace(/注/g, '註').replace(/裏/g, '裡').replace(/他/g, '祂');
+    };
 
-        const input = document.getElementById('searchInput');
-        const results = document.getElementById('results');
+    const input = document.getElementById('searchInput');
+    const results = document.getElementById('results');
 
-        input.addEventListener('input', function() {
-            const val = normalize(this.value);
-            results.innerHTML = '';
+    // 2. 加入搜尋的事件監聽器
+    input.addEventListener('input', function() {
+        const val = normalize(this.value);
+        results.innerHTML = '';
+        if (val === '') return;
+
+        songs.forEach(song => {
+            const songText = normalize(song.text);
+            const isMatch = songText.includes(val) || 
+                          (val.length >= 4 && songText.includes(val.substring(0, val.length - 1)));
             
-            if (val === '') return;
-            
-            songs.forEach(song => {
-                const songText = normalize(song.text);
+            if (isMatch) {
+                // 標準化顯示的文字
+                let displayTitle = song.text.replace(/注/g, '註').replace(/裏/g, '裡').replace(/他/g, '祂');
                 
-                const isMatch = songText.includes(val) || 
-                              (val.length >= 4 && songText.includes(val.substring(0, val.length - 1)));
-                
-                if (isMatch) {
-                    let tag = "";
-                    if (songText.includes('副歌') || songText.includes('bridge')) {
-                        tag = ' <span class="tag-chorus">(副歌/Bridge)</span>';
-                    }
-
-                    results.innerHTML += `<div class="song-item">
-                        <span class="song-id">${song.id}</span>${song.text}${tag}
-                    </div>`;
+                let tag = "";
+                // 偵測副歌 (單引號)
+                if (song.text.includes('「') || song.text.includes('」') || song.text.includes("'")) {
+                    tag = ' <span class="tag-chorus">(副歌)</span>';
+                } 
+                // 偵測 Bridge (雙引號)
+                else if (song.text.includes('『') || song.text.includes('』') || song.text.includes('"')) {
+                    tag = ' <span class="tag-chorus">(Bridge)</span>';
                 }
-            });
+
+                results.innerHTML += `<div class="song-item">
+                    <span class="song-id">${song.id}</span>${displayTitle}${tag}
+                </div>`;
+            }
         });
-    </script>
+    });
+</script>
 </body>
 </html>
