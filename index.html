@@ -2,60 +2,63 @@
 <html lang="zh-Hant">
 <head>
     <meta charset="UTF-8">
-    <title>敬拜歌曲 PPT 搜尋器</title>
+    <title>ANM HK PPT 智能搜尋</title>
     <style>
-    body { font-family: sans-serif; line-height: 1.6; padding: 20px; }
-    #searchInput { width: 100%; padding: 10px; font-size: 16px; border: 2px solid #ccc; }
-    .song-item { margin: 10px 0; padding: 10px; border-bottom: 1px solid #eee; }
-    /* 這裡確保 ID 是紅色 */
-    .song-id { color: red; font-weight: bold; margin-right: 10px; }
-    /* 這裡讓副歌標籤變成紅色字 */
-    .tag-chorus { color: red; font-weight: bold; font-size: 0.9em; margin-left: 10px; }
-</style>
+        body { font-family: sans-serif; line-height: 1.6; padding: 20px; max-width: 800px; margin: auto; }
+        .header { text-align: center; margin-bottom: 20px; }
+        #searchInput { width: 100%; padding: 10px; font-size: 16px; border: 2px solid #ccc; box-sizing: border-box; }
+        .song-item { margin: 10px 0; padding: 10px; border-bottom: 1px solid #eee; }
+        .song-id { color: red; font-weight: bold; margin-right: 10px; }
+        .tag-chorus { color: red; font-weight: bold; font-size: 0.9em; margin-left: 10px; }
+        img { max-width: 100%; height: auto; border-radius: 8px; margin-top: 10px; }
+    </style>
 </head>
 <body>
+    <div class="header">
+        <h1>ANM HK PPT 智能搜尋</h1>
+        <!-- 請確保圖片檔名為 image_4.png 並且與 index.html 在同一目錄下 -->
+        <img src="image_4.png" alt="ANM HK">
+    </div>
+
     <input type="text" id="searchInput" placeholder="請輸入關鍵字 (支援模糊搜尋)...">
     <div id="results"></div>
 
     <script src="data.js"></script>
-<script>
-    // 1. 異體字與錯別字轉換規則
-    const normalize = (text) => {
-        return text.toLowerCase()
-            .replace(/注/g, '註')
-            .replace(/裏/g, '裡')
-            .replace(/他/g, '祂');
-    };
+    <script>
+        const normalize = (text) => {
+            return text.toLowerCase()
+                .replace(/注/g, '註')
+                .replace(/裏/g, '裡')
+                .replace(/他/g, '祂');
+        };
 
-    const input = document.getElementById('searchInput');
-    const results = document.getElementById('results');
+        const input = document.getElementById('searchInput');
+        const results = document.getElementById('results');
 
-    input.addEventListener('input', function() {
-        const val = normalize(this.value);
-        results.innerHTML = '';
-        
-        if (val === '') return; // 清空輸入框則不顯示
-        
-        songs.forEach(song => {
-            const songText = normalize(song.text);
+        input.addEventListener('input', function() {
+            const val = normalize(this.value);
+            results.innerHTML = '';
             
-            // 2. 搜尋邏輯：完全匹配 OR 模糊搜尋 (輸入4字以上且差異極小)
-            const isMatch = songText.includes(val) || 
-                          (val.length >= 4 && songText.includes(val.substring(0, val.length - 1)));
+            if (val === '') return;
             
-            if (isMatch) {
-                // 3. 識別副歌或 Bridge (自動標記)
-                let tag = "";
-                if (songText.includes('副歌') || songText.includes('bridge')) {
-                    tag = ' <span class="tag-chorus">(副歌/Bridge)</span>';
+            songs.forEach(song => {
+                const songText = normalize(song.text);
+                
+                const isMatch = songText.includes(val) || 
+                              (val.length >= 4 && songText.includes(val.substring(0, val.length - 1)));
+                
+                if (isMatch) {
+                    let tag = "";
+                    if (songText.includes('副歌') || songText.includes('bridge')) {
+                        tag = ' <span class="tag-chorus">(副歌/Bridge)</span>';
+                    }
+
+                    results.innerHTML += `<div class="song-item">
+                        <span class="song-id">${song.id}</span>${song.text}${tag}
+                    </div>`;
                 }
-
-                results.innerHTML += `<div class="song-item">
-                    <span class="song-id">${song.id}</span>${song.text}${tag}
-                </div>`;
-            }
+            });
         });
-    });
-</script>
+    </script>
 </body>
 </html>
